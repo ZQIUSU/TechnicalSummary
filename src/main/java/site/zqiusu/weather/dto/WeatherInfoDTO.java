@@ -1,4 +1,4 @@
-package site.zqiusu.dto;
+package site.zqiusu.weather.dto;
 
 import lombok.Data;
 
