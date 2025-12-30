@@ -73,6 +73,8 @@ public class GetWeatherInfoController {
         weatherInfoDTO.setHumidity("0%");
         weatherInfoDTO.setWindSpeed("大风");
 
+        logger.info(String.valueOf(weatherInfoDTO));
+
         return weatherInfoDTO;
 
 //            return httpClient.execute(request, response -> {

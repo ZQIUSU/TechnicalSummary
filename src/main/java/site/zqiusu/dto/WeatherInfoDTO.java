@@ -7,11 +7,13 @@ import lombok.Data;
  */
 @Data
 public class WeatherInfoDTO {
-//    private WeatherInfoDTO weatherInfoDTO;
-
 
     private String temperature;
+
     private String condition;
+
     private String humidity;
+
     private String windSpeed;
+
 }
