@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气查询系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .input-icon {
+            padding: 0 15px;
+            color: #7f8c8d;
+            background-color: #f8f9fa;
+        }
+
+        input {
+            flex: 1;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button i {
+            margin-right: 10px;
+        }
+
+        .result-container {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .weather-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .weather-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        .weather-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .data-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background-color: #ffeaea;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .location-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .location-hint i {
+            margin-right: 5px;
+        }
+
+        .example-locations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .location-btn {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .location-btn:hover {
+            background-color: #d5dbdb;
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .weather-data {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-cloud-sun"></i> 天气查询系统</h1>
+        <p>输入经纬度获取实时天气信息</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-search-location"></i> 查询参数
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="latitude">纬度 (Latitude)</label>
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <input type="text" id="latitude" placeholder="例如：39.9042 (北京)">
+                </div>
+                <div class="location-hint">
+                    <i class="fas fa-info-circle"></i> 纬度范围：-90 到 90，北纬为正，南纬为负
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="longitude">经度 (Longitude)</label>
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-long-arrow-alt-right"></i>
+                    </div>
+                    <input type="text" id="longitude" placeholder="例如：116.4074 (北京)">
+                </div>
+                <div class="location-hint">
+                    <i class="fas fa-info-circle"></i> 经度范围：-180 到 180，东经为正，西经为负
+                </div>
+            </div>
+
+            <div class="example-locations">
+                <div class="location-hint" style="width:100%; margin-bottom: 5px;">
+                    <i class="fas fa-map-marker-alt"></i> 快速选择：
+                </div>
+                <button class="location-btn" data-lat="39.9042" data-lon="116.4074">北京</button>
+                <button class="location-btn" data-lat="31.2304" data-lon="121.4737">上海</button>
+                <button class="location-btn" data-lat="23.1291" data-lon="113.2644">广州</button>
+                <button class="location-btn" data-lat="40.7128" data-lon="-74.0060">纽约</button>
+                <button class="location-btn" data-lat="51.5074" data-lon="-0.1278">伦敦</button>
+                <button class="location-btn" data-lat="35.6762" data-lon="139.6503">东京</button>
+            </div>
+
+            <button id="weatherBtn">
+                <i class="fas fa-cloud-sun-rain"></i> 获取天气信息
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在获取天气数据，请稍候...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <div class="result-container" id="resultContainer">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cloud-sun"></i> 天气信息
+            </div>
+            <div class="card-body">
+                <div class="weather-card" id="weatherResult">
+                    <!-- 天气数据将在这里显示 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>天气查询系统 &copy; 2023 | 后端API接口：http://localhost:8089/weather?latitude=xxx&longitude=xxx</p>
+</footer>
+
+<script>
+    // DOM元素
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+    const weatherBtn = document.getElementById('weatherBtn');
+    const loadingElement = document.getElementById('loading');
+    const errorMessageElement = document.getElementById('errorMessage');
+    const resultContainer = document.getElementById('resultContainer');
+    const weatherResult = document.getElementById('weatherResult');
+    const locationButtons = document.querySelectorAll('.location-btn');
+
+    // 示例位置按钮点击事件
+    locationButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const lat = this.getAttribute('data-lat');
+            const lon = this.getAttribute('data-lon');
+            latitudeInput.value = lat;
+            longitudeInput.value = lon;
+        });
+    });
+
+    // 获取天气按钮点击事件
+    weatherBtn.addEventListener('click', weatherData);
+
+    // 输入框回车键支持
+    latitudeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') weatherData();
+    });
+
+    longitudeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') weatherData();
+    });
+
+    // 获取天气数据函数
+    async function weatherData() {
+        // 获取输入值
+        const latitude = latitudeInput.value.trim();
+        const longitude = longitudeInput.value.trim();
+
+        // 验证输入
+        if (!latitude || !longitude) {
+            showError("请输入纬度和经度");
+            return;
+        }
+
+        if (!isValidCoordinate(latitude, longitude)) {
+            showError("请输入有效的经纬度坐标");
+            return;
+        }
+
+        // 显示加载状态
+        showLoading();
+        hideError();
+        hideResult();
+
+        try {
+            // 构建请求URL - 请根据您的实际后端URL修改此处
+            // 注意：如果您的后端部署在其他地址，请替换下面的URL
+            const apiUrl = `http://localhost:8089/weather?latitude=${latitude}&longitude=${longitude}`;
+
+            // 发送GET请求
+            const response = await fetch(apiUrl);
+
+            // 检查响应状态
+            if (!response.ok) {
+                throw new Error(`HTTP错误: ${response.status}`);
+            }
+
+
+            // 获取响应文本
+            const weatherData = await response.text();
+            console.log('weatherData',weatherData);
+
+            // 显示结果
+            displayWeatherResult(weatherData, latitude, longitude);
+
+        } catch (error) {
+            console.error('获取天气数据时出错:', error);
+            showError(`无法获取天气数据: ${error.message}<br>请检查后端服务是否正常运行，或联系管理员。`);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // 验证坐标格式
+    function isValidCoordinate(lat, lon) {
+        const latNum = parseFloat(lat);
+        const lonNum = parseFloat(lon);
+
+        if (isNaN(latNum) || isNaN(lonNum)) {
+            return false;
+        }
+
+        if (latNum < -90 || latNum > 90) {
+            return false;
+        }
+
+        if (lonNum < -180 || lonNum > 180) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // 显示加载状态
+    function showLoading() {
+        loadingElement.style.display = 'block';
+        weatherBtn.disabled = true;
+    }
+
+    // 隐藏加载状态
+    function hideLoading() {
+        loadingElement.style.display = 'none';
+        weatherBtn.disabled = false;
+    }
+
+    // 显示错误信息
+    function showError(message) {
+        errorMessageElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+        errorMessageElement.style.display = 'block';
+    }
+
+    // 隐藏错误信息
+    function hideError() {
+        errorMessageElement.style.display = 'none';
+    }
+
+    // 显示结果
+    function showResult() {
+        resultContainer.style.display = 'block';
+    }
+
+    // 隐藏结果
+    function hideResult() {
+        resultContainer.style.display = 'none';
+    }
+
+    // 显示天气结果
+    function displayWeatherResult(data, latitude, longitude) {
+        // 创建一个简单的解析函数，假设后端返回的是JSON格式的字符串
+        // 如果您的后端返回的是纯文本，这里需要根据实际情况调整
+        let weatherInfo;
+
+        try {
+            // 尝试解析为JSON
+            weatherInfo = JSON.parse(data);
+        } catch (e) {
+            // 如果不是JSON，则当作纯文本处理
+            weatherInfo = {
+                rawData: data,
+                temperature: "未知",
+                condition: "未知",
+                humidity: "未知",
+                windSpeed: "未知",
+                pressure: "未知"
+            };
+        }
+
+        // 构建结果HTML
+        let html = `
+            <div class="weather-header">
+                <div class="weather-title">
+                    <i class="fas fa-map-marker-alt"></i> 坐标: ${latitude}, ${longitude}
+                </div>
+                <div class="weather-time">
+                    ${new Date().toLocaleString()}
+                </div>
+            </div>
+        `;
+
+        // 如果返回的是JSON格式，可以更友好地展示
+        if (weatherInfo && typeof weatherInfo === 'object' && !weatherInfo.rawData) {
+            html += `
+                <div class="weather-data">
+                    <div class="data-item">
+                        <div class="data-label">温度</div>
+                        <div class="data-value">${weatherInfo.temperature || '未知'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">天气状况</div>
+                        <div class="data-value">${weatherInfo.condition || '未知'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">湿度</div>
+                        <div class="data-value">${weatherInfo.humidity || '未知'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">风速</div>
+                        <div class="data-value">${weatherInfo.windSpeed || '未知'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">气压</div>
+                        <div class="data-value">${weatherInfo.pressure || '未知'}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">能见度</div>
+                        <div class="data-value">${weatherInfo.visibility || '未知'}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // 如果返回的是纯文本，直接显示
+            html += `
+                <div class="weather-data">
+                    <div class="data-item" style="grid-column: 1 / -1;">
+                        <div class="data-label">原始响应数据</div>
+                        <div class="data-value" style="font-size: 1.1rem; font-weight: normal; word-break: break-all;">
+                            ${weatherInfo.rawData || data}
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; color: #7f8c8d; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> 提示：如果希望更美观地显示数据，请确保后端返回JSON格式数据。
+                </div>
+            `;
+        }
+
+        // 更新DOM
+        weatherResult.innerHTML = html;
+        showResult();
+
+        // 滚动到结果区域
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 页面加载时，可以添加一些初始数据
+    window.addEventListener('DOMContentLoaded', function() {
+        // 可以设置一些默认值用于测试
+        // latitudeInput.value = "39.9042";
+        // longitudeInput.value = "116.4074";
+    });
+</script>
+</body>
+</html>

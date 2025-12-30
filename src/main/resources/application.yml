@@ -1,0 +1,8 @@
+spring:
+  config:
+    name: hello-world
+  profiles:
+    active: dev
+logging:
+  level:
+    root: INFO             # 根日志级别
