@@ -8,27 +8,36 @@ spring:
       min-idle: 5
       initial-size: 3
       max-active: 5
-      filters: conn,config,stat,slf4j
+      filters: config,stat,slf4j
       filter:
         wall:
           enabled: true
           db-type: mysql
           config:
             delete-allow: false
-            drop-table-allow: false
+#            drop-table-allow: false #禁止删除表
+      stat-view-servlet:
+        enabled: true           # 启用监控页面
+        url-pattern: /druid/*  # 访问路径
+        login-username: admin  # 登录用户名
+        login-password: admin  # 登录密码
+        reset-enable: false    # 禁用重置按钮
+        allow: 127.0.0.1       # 允许访问的IP（白名单）
+        deny:                  # 拒绝访问的IP（黑名单）
 
-
-#  jpa:
-#    hibernate:
-#      naming:
-#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-#        # 下面配置开启后，会禁止将驼峰转为下划线
-#        # physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    open-in-view: false
-#    properties:
-#      hibernate:
-#        enable_lazy_load_no_trans: true
-#        # 控制是否可以基于程序中Entity的定义自动创建或者修改DB中表结构
+  jpa:
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        # 下面配置开启后，会禁止将驼峰转为下划线
+        # physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: create-drop #关闭spring boot项目后自动drop表
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        enable_lazy_load_no_trans: true
+        # 控制是否可以基于程序中Entity的定义自动创建或者修改DB中表结构
 #        hbm2ddl.auto: update
 #        # 控制是否打印运行时的SQL语句与参数信息
-#    show-sql: true
+    show-sql: true

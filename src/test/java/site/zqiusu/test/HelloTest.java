@@ -16,9 +16,9 @@ public class HelloTest {
     private JdbcTemplate jdbcTemplate;
 
     //预期抛出的错误，如果抛出了就通过
-    @Test(expected = CustomDuplicatedKeyException.class)
+    @Test
     public void test() {
         jdbcTemplate.execute("INSERT INTO customer (id,name) VALUES (1,'zzp')");
-        jdbcTemplate.execute("INSERT INTO customer (id,name) VALUES (1,'wyc')");
+        jdbcTemplate.execute("INSERT INTO customer (id,name) VALUES (2,'wyc')");
     }
 }

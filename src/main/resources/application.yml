@@ -6,6 +6,7 @@ spring:
 logging:
   level:
     root: INFO             # 根日志级别
+    web: INFO
 
 management:
   endpoints:
@@ -13,7 +14,6 @@ management:
       exposure:
         include:
           - "*"
-
 
 server:
   port: 8089

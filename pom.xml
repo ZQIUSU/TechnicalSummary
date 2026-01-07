@@ -58,10 +58,10 @@
         </dependency>
 
 <!--        jpa-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
 <!--        jdbc驱动-->
         <dependency>
@@ -79,13 +79,6 @@
                     <artifactId>HikariCP</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-<!--        热启动-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
         </dependency>
 
 <!--        测试-->

@@ -5,18 +5,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
+import site.zqiusu.model.Customer;
+import site.zqiusu.repository.CustomerRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @SpringBootApplication
+@EnableJpaRepositories
 public class Application implements CommandLineRunner{//实现这个接口也是做定制，来打印日志
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private CustomerService customerService;
+    private CustomerRepository repository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
@@ -25,19 +30,18 @@ public class Application implements CommandLineRunner{//实现这个接口也是
 
     @Override
     public void run(String... args) throws Exception {
-        customerService.insert();
-        log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 1", Long.class));
+        Customer customer = new Customer(1L,"zzp");
+        repository.save(customer);
+//        Optional<Customer> byId = repository.findById(1L);
 
-        try{
-            customerService.insertThenRollback();
-        } catch (Exception e) {
-            log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 2", Long.class));
-        }
-
-        try{
-            customerService.invokeInsertThenRollback();
-        } catch (Exception e) {
-            log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 2", Long.class));
+        List<Customer> customers = new ArrayList<>();
+        customers.add(new Customer(2L,"wyc"));
+        customers.add(new Customer(3L,"lalala"));
+        customers.add(new Customer(2L,"wowowo"));
+        repository.saveAll(customers);
+        Iterable<Customer> all = repository.findAll();
+        for(Customer customer1 : all){
+            System.out.println(customer1);
         }
     }
 }
