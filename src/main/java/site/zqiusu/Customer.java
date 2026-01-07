@@ -1,4 +1,4 @@
-package site.zqiusu.model;
+package site.zqiusu;
 
 import lombok.Data;
 

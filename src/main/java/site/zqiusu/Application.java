@@ -5,37 +5,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @Slf4j
 @SpringBootApplication
-public class Application  implements CommandLineRunner{//实现这个接口也是做定制，来打印日志
+public class Application implements CommandLineRunner{//实现这个接口也是做定制，来打印日志
 
-    //注入datasource来查看相关的配置
     @Autowired
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private CustomerService customerService;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
     }
 
-    @Override
-    public void run(String... args) throws SQLException {
-        showConnection();
-    }
 
-    private void showConnection()  {
-        log.info(dataSource.toString());
-        try (Connection connection = dataSource.getConnection()) {
-            log.info(connection.toString());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    @Override
+    public void run(String... args) throws Exception {
+        customerService.insert();
+        log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 1", Long.class));
+
+        try{
+            customerService.insertThenRollback();
+        } catch (Exception e) {
+            log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 2", Long.class));
+        }
+
+        try{
+            customerService.invokeInsertThenRollback();
+        } catch (Exception e) {
+            log.info("{}",jdbcTemplate.queryForObject("SELECT COUNT(*) FROM customer WHERE ID = 2", Long.class));
         }
     }
-
-
 }
