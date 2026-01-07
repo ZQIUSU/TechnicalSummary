@@ -13,8 +13,9 @@ import java.sql.SQLException;
 
 @Slf4j
 @SpringBootApplication
-public class Application  implements CommandLineRunner{
+public class Application  implements CommandLineRunner{//实现这个接口也是做定制，来打印日志
 
+    //注入datasource来查看相关的配置
     @Autowired
     private DataSource dataSource;
 

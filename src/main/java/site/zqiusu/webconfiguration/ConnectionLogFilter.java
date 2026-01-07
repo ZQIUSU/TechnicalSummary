@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Properties;
 
+//druid的定制，继承FilterEventAdapter，重写这几个方法就行了
 @Slf4j
 public class ConnectionLogFilter extends FilterEventAdapter {
 
