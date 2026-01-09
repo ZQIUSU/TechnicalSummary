@@ -24,14 +24,18 @@ spring:
         reset-enable: false    # 禁用重置按钮
         allow: 127.0.0.1       # 允许访问的IP（白名单）
         deny:                  # 拒绝访问的IP（黑名单）
-
+  sql:
+    init:
+      mode: NEVER
+      schema-locations:
+        - 'classpath*:schema.sql'
   jpa:
     hibernate:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         # 下面配置开启后，会禁止将驼峰转为下划线
         # physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create-drop #关闭spring boot项目后自动drop表
+      ddl-auto: create #关闭spring boot项目后自动drop表
     open-in-view: false
     properties:
       hibernate:
@@ -40,4 +44,4 @@ spring:
         # 控制是否可以基于程序中Entity的定义自动创建或者修改DB中表结构
 #        hbm2ddl.auto: update
 #        # 控制是否打印运行时的SQL语句与参数信息
-    show-sql: true
+#    show-sql: true

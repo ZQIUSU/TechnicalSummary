@@ -80,7 +80,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+<!--        joda-money处理金额相关的-->
+        <dependency>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-money</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>6.0.1.GA</version>
+        </dependency>
 <!--        测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
