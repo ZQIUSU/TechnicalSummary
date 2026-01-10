@@ -97,6 +97,8 @@ public class Application implements CommandLineRunner{//实现这个接口也是
         list = coffeeOrderRepository.findByItemsCoffeeName("latte");
         log.info("findByItemsCoffeeName:{}",getJoinedOrderId(list));
 
+
+        log.info("Hello");
     }
 
     //只输出id的集合，用逗号隔开
