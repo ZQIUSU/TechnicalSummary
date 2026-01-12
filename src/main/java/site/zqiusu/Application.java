@@ -8,14 +8,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import site.zqiusu.dto.AccountsReceivableDTO;
+import site.zqiusu.model.AccountsReceivable;
 import site.zqiusu.model.Coffee;
 import site.zqiusu.model.CoffeeOrder;
+import site.zqiusu.repository.AccountsReceivableRepository;
 import site.zqiusu.repository.CoffeeOrderRepository;
 import site.zqiusu.repository.CoffeeRepository;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -23,6 +28,9 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 @EnableJpaRepositories
 public class Application implements CommandLineRunner{//实现这个接口也是做定制，来打印日志
+
+    @Autowired
+    private AccountsReceivableRepository repository;
 
     @Autowired
     private CoffeeRepository coffeeRepository;
@@ -37,8 +45,9 @@ public class Application implements CommandLineRunner{//实现这个接口也是
 
     @Override
     public void run(String... args) throws Exception {
-        init();
-        findOrders();
+//        init();
+//        findOrders();
+        select();
     }
 
     private void init(){//初始化数据表
@@ -98,9 +107,6 @@ public class Application implements CommandLineRunner{//实现这个接口也是
         log.info("findByItemsCoffeeName:{}",getJoinedOrderId(list));
 
 
-        log.info("Hello");
-
-        log.info("Hello");
 
     }
 
@@ -108,6 +114,17 @@ public class Application implements CommandLineRunner{//实现这个接口也是
     private String getJoinedOrderId(List<CoffeeOrder> list){
         return list.stream().map(o -> o.getId().toString())
                 .collect(Collectors.joining(","));
+    }
+
+
+    private void select(){
+        List<Object[]> results= repository.sumReceivableAmountGroupByAgingAnalysis();
+        System.out.println("agingAnalysis\t\tsum");
+        for(Object[] obj : results){
+            String str = (String) obj[0];
+            BigDecimal flo = (BigDecimal) obj[1];
+            System.out.printf("    %s\t\t%.2f%n",str,flo);
+        }
     }
 
 }

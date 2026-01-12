@@ -35,7 +35,7 @@ spring:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         # 下面配置开启后，会禁止将驼峰转为下划线
         # physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create #关闭spring boot项目后自动drop表
+#      ddl-auto: create #关闭spring boot项目后自动drop表
     open-in-view: false
     properties:
       hibernate:
