@@ -3,10 +3,27 @@ spring:
     name: hello-world
   profiles:
     active: druid
+  kafka:
+    # 这是最关键的配置！告诉你的应用Kafka服务器在哪
+    bootstrap-servers: localhost:9092
+
+    # 生产者相关配置
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    # 消费者相关配置
+    consumer:
+      group-id: consumer-zzp # 消费者组ID
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
 logging:
   level:
     root: INFO             # 根日志级别
     web: INFO
+
 
 management:
   endpoints:
